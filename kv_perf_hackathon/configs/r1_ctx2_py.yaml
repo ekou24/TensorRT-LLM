@@ -1,0 +1,13 @@
+benchmark:
+  input_length: 1024
+  output_length: 1024
+  concurrency: 1024
+hardware:
+  num_ctx_servers: 2
+  num_gen_servers: 4
+worker_config:
+  parallelism_type: tep
+  parallelism_size: 8
+  batch_size: 32
+  mtp: 0
+  transceiver_runtime: PYTHON

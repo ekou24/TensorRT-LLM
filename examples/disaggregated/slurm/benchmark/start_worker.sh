@@ -28,6 +28,11 @@ fi
 
 echo "config_file: ${config_file}"
 
+# Enable KV cache transceiver perf logging if log_dir is available
+if [ -n "${log_dir}" ]; then
+    export TRTLLM_KVCACHE_TIME_OUTPUT_PATH="${log_dir}/kv_perf"
+fi
+
 nsys_prefix=""
 if [ "${enable_nsys}" != "true" ]; then
     echo "nsys is not enabled, start normal flow"

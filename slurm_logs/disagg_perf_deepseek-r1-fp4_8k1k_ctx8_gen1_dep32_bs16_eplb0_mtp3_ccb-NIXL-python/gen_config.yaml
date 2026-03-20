@@ -1,0 +1,39 @@
+cache_transceiver_config:
+  backend: NIXL
+  max_tokens_in_buffer: 8448
+  transceiver_runtime: PYTHON
+cuda_graph_config:
+  batch_sizes:
+  - 1
+  - 2
+  - 4
+  - 8
+  - 16
+  - 32
+  - 64
+  - 128
+  - 256
+  - 512
+  - 768
+  - 1024
+  - 2048
+  enable_padding: true
+enable_attention_dp: true
+kv_cache_config:
+  dtype: fp8
+  enable_block_reuse: false
+  free_gpu_memory_fraction: 0.7
+max_batch_size: 16
+max_num_tokens: 64
+max_seq_len: 9419
+moe_config:
+  backend: WIDEEP
+moe_expert_parallel_size: 32
+num_postprocess_workers: 4
+pipeline_parallel_size: 1
+print_iter_log: true
+speculative_config:
+  decoding_type: MTP
+  num_nextn_predict_layers: 3
+stream_interval: 20
+tensor_parallel_size: 32

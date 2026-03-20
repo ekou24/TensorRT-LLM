@@ -1,0 +1,11 @@
+backend: pytorch
+context_servers:
+  num_instances: 1
+  urls:
+  - lyris0178:8000
+generation_servers:
+  num_instances: 1
+  urls:
+  - lyris0173:8000
+hostname: lyris0173
+port: 8333

@@ -88,7 +88,7 @@ def parse_python_logs(log_files):
     """
     rows = defaultdict(list)
     for path in log_files:
-        with open(path) as f:
+        with open(path, errors='replace') as f:
             for line in f:
                 m = _PY_SEND_RE.search(line)
                 if m:

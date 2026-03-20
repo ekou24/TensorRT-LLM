@@ -1,0 +1,96 @@
+metadata:
+  model_name: Qwen3-235B-A22B-FP8
+  precision: fp8
+  model_dir_name: Qwen3-235B-A22B-FP8
+  supported_gpus:
+  - GB200
+  - GB300
+  script_file: disaggr_torch.slurm
+  benchmark_type: 1k1k
+slurm:
+  script_file: /home/ekou/workspace/dev/TensorRT-LLM/examples/disaggregated/slurm/benchmark/disaggr_torch.slurm
+  partition: gb200
+  account: coreai_comparch_trtllm
+  job_time: 02:00:00
+  job_name: coreai_comparch_trtllm-unified.benchmark
+  extra_args: ''
+  numa_bind: true
+  set_segment: true
+benchmark:
+  mode: e2e
+  use_nv_sa_benchmark: true
+  multi_round: 8
+  benchmark_ratio: 0.8
+  streaming: true
+  concurrency_list: 1 2 4 8 16 36
+  input_length: 1024
+  output_length: 1024
+  dataset_file: <your_dataset_path>/
+hardware:
+  gpus_per_node: 4
+  num_ctx_servers: 1
+  num_gen_servers: 1
+environment:
+  container_mount: /home/ekou/workspace/dev/TensorRT-LLM/tests/integration/defs/perf/disagg:/home/ekou/workspace/dev/TensorRT-LLM/tests/integration/defs/perf/disagg,/home/ekou/workspace/dev/TensorRT-LLM/examples/disaggregated/slurm/benchmark:/home/ekou/workspace/dev/TensorRT-LLM/examples/disaggregated/slurm/benchmark,/lustre/fsw/coreai_comparch_trtllm/common:/lustre/fsw/coreai_comparch_trtllm/common,/home/ekou/workspace/dev/TensorRT-LLM:/home/ekou/workspace/dev/TensorRT-LLM,/home/ekou/workspace/dev/TensorRT-LLM:/home/ekou/workspace/dev/TensorRT-LLM,/home/ekou/workspace/dev/TensorRT-LLM/build:/home/ekou/workspace/dev/TensorRT-LLM/build
+  container_image: urm.nvidia.com/sw-tensorrt-docker/tensorrt-llm:pytorch-25.12-py3-aarch64-ubuntu24.04-trt10.14.1.48-skip-tritondevel-202603051044-11898
+  model_path: /lustre/fsw/coreai_comparch_trtllm/common/Qwen3-235B-A22B-FP8
+  trtllm_repo: ''
+  build_wheel: false
+  work_dir: /home/ekou/workspace/dev/TensorRT-LLM/examples/disaggregated/slurm/benchmark
+  worker_env_var: TLLM_LOG_LEVEL=INFO TRTLLM_SERVER_DISABLE_GC=1 TRTLLM_WORKER_DISABLE_GC=1 TRTLLM_ENABLE_PDL=1 ENROOT_ALLOW_DEV=yes
+  server_env_var: TRTLLM_SERVER_DISABLE_GC=1
+  trtllm_wheel_path: /home/ekou/workspace/dev/TensorRT-LLM/build/tensorrt_llm-1.3.0rc7-cp312-cp312-linux_aarch64.whl
+profiling:
+  nsys_on: false
+accuracy:
+  enable_accuracy_test: false
+  env_var:
+    HF_HOME: <Your HF home directory>
+worker_config:
+  gen:
+    tensor_parallel_size: 4
+    moe_expert_parallel_size: 4
+    enable_attention_dp: false
+    pipeline_parallel_size: 1
+    max_batch_size: 64
+    max_num_tokens: 2048
+    max_seq_len: 2051
+    cuda_graph_config:
+      enable_padding: true
+      max_batch_size: 128
+    print_iter_log: true
+    kv_cache_config:
+      enable_block_reuse: true
+      free_gpu_memory_fraction: 0.7
+      dtype: fp8
+    moe_config:
+      backend: TRTLLM
+    cache_transceiver_config:
+      max_tokens_in_buffer: 2048
+      backend: NIXL
+      transceiver_runtime: CPP
+    stream_interval: 20
+    num_postprocess_workers: 4
+    allreduce_strategy: MNNVL
+    disable_overlap_scheduler: false
+  ctx:
+    max_batch_size: 32
+    max_num_tokens: 2048
+    max_seq_len: 2051
+    tensor_parallel_size: 4
+    moe_expert_parallel_size: 4
+    enable_attention_dp: false
+    pipeline_parallel_size: 1
+    print_iter_log: true
+    cuda_graph_config: null
+    disable_overlap_scheduler: true
+    kv_cache_config:
+      enable_block_reuse: true
+      free_gpu_memory_fraction: 0.7
+      dtype: fp8
+    moe_config:
+      backend: TRTLLM
+    cache_transceiver_config:
+      max_tokens_in_buffer: 2048
+      backend: NIXL
+      transceiver_runtime: CPP
